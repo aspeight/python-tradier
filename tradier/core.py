@@ -85,6 +85,26 @@ class Tradier(object):
                 params={'symbols': ','.join(symbols)},
                 callback=callback)
 
+        def history(self, symbol, start=None, end=None, interval=None):
+            def callback(response):
+                quote = response['history'].get('day', [])
+                if not isinstance(quote, list):
+                    quote = [quote]
+                return quote
+            params={'symbol': symbol}
+            if start is not None:
+                params['start'] = start
+            if end is not None:
+                params['end'] = end
+            if interval is not None:
+                assert False, 'interval must be None' # TODO BUG
+                params['interval'] = interval
+            return self.agent.request(
+                'GET',
+                'markets/history',
+                params=params,
+                callback=callback)
+
     class Fundamentals(object):
         def __init__(self, agent):
             self.agent = agent
