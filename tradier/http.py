@@ -1,6 +1,6 @@
 import collections
-import urlparse
-import urllib
+import urllib.parse
+import urllib.request, urllib.parse, urllib.error
 
 
 try:
@@ -69,7 +69,7 @@ class tornado(object):
             uri = self.base_uri + path
             if not params:
                 return uri
-            return '%s?%s' % (uri, urllib.urlencode(params))
+            return '%s?%s' % (uri, urllib.parse.urlencode(params))
 
         def response(self, response):
             return Response(
@@ -98,7 +98,7 @@ class vanilla(object):
     class Client(Base):
         def __init__(self, h, uri):
             self.h = h
-            parsed = urlparse.urlsplit(uri)
+            parsed = urllib.parse.urlsplit(uri)
             self.host = '%s://%s' % (parsed.scheme, parsed.netloc)
             self.conn = self.h.http.connect(self.host)
             self.base_path = parsed.path
