@@ -128,6 +128,14 @@ class Tradier(object):
                 'markets/options/expirations',
                 params={'symbol': symbol},
                 callback=(lambda x: x['expirations']['date']))
+        
+        def strikes(self, symbol, expiration):
+            return self.agent.request(
+                'GET',
+                'markets/options/strikes',
+                params={'symbol': symbol,
+                        'expiration': expiration},
+                callback=(lambda x: x['strikes']['strike']))
 
         def chains(self, symbol, expiration):
             def callback(response):
