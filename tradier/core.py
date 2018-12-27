@@ -73,6 +73,46 @@ class Tradier(object):
         def __init__(self, agent):
             self.agent = agent
 
+        def clock(self, year=None, month=None):
+            def callback(response):
+                quote = response['clock']
+                return quote
+            params = {}
+            return self.agent.request(
+                'GET',
+                'markets/clock',
+                params=params,
+                callback=callback)
+
+        def calendar(self, year=None, month=None):
+            def callback(response):
+                quote = response['calendar'].get('days', [{}]).get('day')
+                if not isinstance(quote, list):
+                    quote = [quote]
+                return quote
+            params = {}
+            if year is not None:
+                params['year'] = year
+            if month is not None:
+                params['Month'] = month
+            return self.agent.request(
+                'GET',
+                'markets/calendar',
+                params=params,
+                callback=callback)         
+
+        def lookup(self, query):
+            def callback(response):
+                quote = response['securities'].get('security', [])
+                if not isinstance(quote, list):
+                    quote = [quote]
+                return quote
+            return self.agent.request(
+                'GET',
+                'markets/lookup',
+                params={'q': query},
+                callback=callback)         
+
         def quotes(self, symbols):
             def callback(response):
                 quote = response['quotes'].get('quote', [])
